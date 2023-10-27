@@ -71,7 +71,6 @@ function initializeWHQ(inputField){
     });
 }
 
-$(document).on()
 
 function checkPriceBaseOnInputs(inputField) {
 
@@ -194,6 +193,7 @@ function initializeAutocomplete(inputField) {
 
         if (value.length === 0) {
             hiddenInput.val('')
+            clearSuggestions()
             checkPriceBaseOnInputs(inputField)
             return;
         }
@@ -202,11 +202,26 @@ function initializeAutocomplete(inputField) {
 
         inputField.parent().append(ul);
     });
+    function clearSuggestions() {
+        $('.suggestions').html('');
+    }
+
+    var selectedInput, suggestion;
+
+    $(document).on('click', function (event) {
+
+        if(selectedInput && suggestion){
+            if (!suggestion.is(event.target) && !selectedInput.is(event.target)) {
+                clearSuggestions();
+            }
+        }
+    });
 
     inputField.on('keydown', function (e) {
-        const ul = $(this).parent().find('.suggestions');
+        selectedInput = $(this);
+        const ul = suggestion = selectedInput.parent().find('.suggestions');
         const selectedLi = ul.find('li.selected');
-
+        const value = inputField.val();
         switch (e.keyCode) {
             case 40: // Down arrow key
                 e.preventDefault();

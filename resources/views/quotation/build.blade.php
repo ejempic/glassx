@@ -1,6 +1,13 @@
-<div class="build-container col-12">
+<div class="build-container col-12" data-id="1">
     <div class="row">
         <div class="col-lg-4">
+            <div class="form-group row">
+                <label class="col-md-12 col-form-label">Location</label>
+                <div class="col-md-12">
+                    <input type="text" class="form-control location-name" value="Location 1"
+                           placeholder="Please enter location" data-id="1">
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-md-12 col-form-label">Build Image</label>
                 <div class="col-md-12">
@@ -147,4 +154,8 @@
         </div>
     </div>
     <hr class="mb-4">
+    <div class="absolute z-50" style="bottom: 40px; right: 15px;">
+        <button class="btn btn-warning btn-sm location-delete" type="button">Delete Location</button>
+        <button class="btn btn-danger btn-sm build-delete" type="button">Delete Build</button>
+    </div>
 </div>

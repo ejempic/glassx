@@ -27,3 +27,7 @@ $(document).on('click','.add-new-build-btn',function(){
     //     initializeWHQ($(this))
     // });
 });
+$(document).on('click','.build-delete',function(){
+
+    $(this).closest('.build-container').remove()
+});

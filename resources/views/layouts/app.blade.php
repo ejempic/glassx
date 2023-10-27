@@ -12,6 +12,7 @@
 
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('/css/app.css')}}">
+        <link rel="stylesheet" href="{{asset('/css/tabs.css')}}">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
@@ -37,6 +38,7 @@
         <script src="{{asset('/js/location.js')}}"></script>
         <script src="{{asset('/js/build.js')}}"></script>
         <script src="{{asset('/js/app.js')}}"></script>
+        <script src="{{asset('/js/tabs.js')}}"></script>
         @stack('scripts')
     </body>
 </html>
