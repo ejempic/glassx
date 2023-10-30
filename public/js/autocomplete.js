@@ -33,9 +33,6 @@ function initializeWHQ(inputField){
     let loadingPrices = false;
     inputField.on('input', function () {
         var hiddenInputs = inputField.closest('.build-container').find('.hidden-input');
-        var buildBasePrice = inputField.closest('.build-container').find('.spec-base-price');
-        var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
-        var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
         const itemBuildHeight = inputField.closest('.build-container').find('.item-height').val()
         const itemBuildWidth = inputField.closest('.build-container').find('.item-width').val()
         const itemBuildQuantity = inputField.closest('.build-container').find('.item-quantity').val()
@@ -52,32 +49,13 @@ function initializeWHQ(inputField){
         requestData['height'] = itemBuildHeight;
         requestData['width'] = itemBuildWidth;
         requestData['quantity'] = itemBuildQuantity;
-
-        if(!loadingPrices){
-            loadingPrices = true
-            $.post('/api/get-price', {query: JSON.stringify(requestData)}, function (data) {
-                buildUpgradePrice.data('amount', data.upgrade_price)
-                buildUpgradePrice.html(formatMoney(data.upgrade_price))
-                buildBasePrice.data('amount',data.base_price)
-                buildBasePrice.html(formatMoney(data.base_price))
-                buildGlassUpgradePrice.data('amount',data.glass_price)
-                buildGlassUpgradePrice.html(formatMoney(data.glass_price))
-                displayBuildTotal(inputField.closest('.build-container'))
-                loadingPrices = false;
-            }).fail(function (error) {
-                console.error(error);
-            });
-        }
+        computeBuildTable(requestData, inputField)
     });
 }
-
 
 function checkPriceBaseOnInputs(inputField) {
 
     var hiddenInputs = inputField.closest('.build-container').find('.hidden-input');
-    var buildBasePrice = inputField.closest('.build-container').find('.spec-base-price');
-    var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
-    var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
     const itemBuildHeight = inputField.closest('.build-container').find('.item-height').val()
     const itemBuildWidth = inputField.closest('.build-container').find('.item-width').val()
     const itemBuildQuantity = inputField.closest('.build-container').find('.item-quantity').val()
@@ -90,19 +68,30 @@ function checkPriceBaseOnInputs(inputField) {
     requestData['width'] = itemBuildWidth;
     requestData['quantity'] = itemBuildQuantity;
 
-    console.log(requestData)
+    computeBuildTable(requestData, inputField)
+}
+
+function computeBuildTable(requestData, inputField){
+
+    var buildBasePrice = inputField.closest('.build-container').find('.spec-base-price');
+    var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
+    var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
     let loadingPrices = false;
     if(!loadingPrices){
         loadingPrices = true;
         $.post('/api/get-price', {query: JSON.stringify(requestData)}, function (data) {
+            buildUpgradePrice.data('amount', data.upgrade_price)
+            buildUpgradePrice.html(formatMoney(data.upgrade_price))
+
             buildBasePrice.data('amount',data.base_price)
             buildBasePrice.html(formatMoney(data.base_price))
-            buildUpgradePrice.data('amount',data.upgrade_price)
-            buildUpgradePrice.html(formatMoney(data.upgrade_price))
+
             buildGlassUpgradePrice.data('amount',data.glass_price)
             buildGlassUpgradePrice.html(formatMoney(data.glass_price))
+
             displayBuildTotal(inputField.closest('.build-container'))
             loadingPrices = false;
+
         }).fail(function (error) {
             console.error(error);
         });
@@ -110,6 +99,7 @@ function checkPriceBaseOnInputs(inputField) {
 }
 
 function displayBuildTotal(itemBuilds){
+    const quantity = itemBuilds.find('input.item-whq.item-quantity').val();
     var buildBasePrice = itemBuilds.find('.spec-base-price').data('amount');
     var buildUpgradePrice = itemBuilds.find('.spec-upgrade-price').data('amount');
     var buildGlassUpgradePrice = itemBuilds.find('.spec-glass-upgrade-price').data('amount');
@@ -126,6 +116,10 @@ function displayBuildTotal(itemBuilds){
 
     if(buildGlassUpgradePrice){
         total +=buildGlassUpgradePrice;
+    }
+
+    if(quantity){
+        total *= quantity;
     }
 
     buildTotalPrice.html(formatMoney(total));

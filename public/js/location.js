@@ -15,7 +15,9 @@ $(document).on('click','#add-new-item',function(){
 $(document).on('keyup','.location-name', function(){
     const locationName = $(this);
     const rowCount = locationName.data("id");
+    const itemBuildContainer = locationName.closest('.item-build-container');
     $('.table-preview-tr[data-id="'+rowCount+'"]').find('td:first-child').html(locationName.val())
+    itemBuildContainer.find('input.location-name[data-id="'+rowCount+'"]').val(locationName.val());
 });
 
 $(document).on('click','.location-delete', function(){
