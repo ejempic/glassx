@@ -81,12 +81,12 @@
                             <input type="hidden" name="frame" class="hidden-input hidden-input-upgrade"
                                    data-type="upgrade">
                         </div>
-                        <!-- <div class="col-md-9">
+                        <div class="col-md-9">
                             <input class="form-control item-upgrade-quantity item-whq autocomplete-input" placeholder="Upgrade"
                                    data-type="" style="resize: none;"/>
                             <input type="hidden" name="frame" class="hidden-input hidden-input-upgrade"
                                    data-type="upgrade"> 
-                        </div> -->
+                        </div>
                     </div>
 
                     <div class="form-group row">

@@ -45,6 +45,7 @@ function initializeWHQ(inputField){
         hiddenInputs.each(function () {
             requestData[$(this).data('type')] = $(this).val();
         });
+
         requestData['upgrade'] = upgradeValue;
         requestData['height'] = itemBuildHeight;
         requestData['width'] = itemBuildWidth;
