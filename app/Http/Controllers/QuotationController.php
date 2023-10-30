@@ -55,7 +55,7 @@ class QuotationController extends Controller
                 $sqm = $query->height * $query->width;
                 $price = $sqm * $upgradeModel->add_on;
             }else{
-                $price = $query->quantity * $upgradeModel->add_on;
+                $price = /*$query->quantity **/ $upgradeModel->add_on;
             }
 
             $data['upgrade_price'] = $price;

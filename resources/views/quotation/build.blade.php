@@ -1,7 +1,7 @@
 <div class="build-container col-12" data-id="1">
     <div class="row">
         <div class="col-lg-4">
-            <div class="form-group row">
+            <div class="form-group row location-input-div">
                 <label class="col-md-12 col-form-label">Location</label>
                 <div class="col-md-12">
                     <input type="text" class="form-control location-name" value="Location 1"
