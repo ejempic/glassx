@@ -125,7 +125,7 @@ function displayBuildTotal(itemBuilds){
     buildTotalPrice.html(formatMoney(total));
 }
 
-function clearOtherElements(inputField) {
+function clearProductTypeSpecs(inputField) {
     const inputFields = inputField.closest('.spec-container').find('.autocomplete-input');
     inputFields.each(function () {
         const inputField = $(this);
@@ -136,18 +136,20 @@ function clearOtherElements(inputField) {
     });
 }
 
+
 function initializeAutocomplete(inputField) {
     const ul = $('<ul class="suggestions"></ul>');
     const inputType = inputField.data('type');
     const hiddenInput = inputField.parent().find('.hidden-input');
 
+    
     ul.on('click', function (event) {
         if (!ul.is(event.target) && ul.has(event.target).length === 0 && !inputField.is(event.target)) {
             ul.html('');
         }
     });
-    inputField.on('click', function () {
 
+    inputField.on('click', function () {
         const itemBuildHeight = inputField.closest('.build-container').find('.item-height').val()
         const itemBuildWidth = inputField.closest('.build-container').find('.item-width').val()
         const itemBuildQuantity = inputField.closest('.build-container').find('.item-quantity').val()
@@ -176,7 +178,6 @@ function initializeAutocomplete(inputField) {
     });
 
     inputField.on('input', function () {
-
         const itemBuildProductType = inputField.closest('.build-container').find('.hidden-input-product-type').val()
 
         if(itemBuildProductType === "" && inputField.data('type') !== "product_type"){
@@ -255,12 +256,13 @@ function initializeAutocomplete(inputField) {
                     ul.html('');
 
                     if (inputField.data('type') === 'product_type') {
-                        clearOtherElements(inputField);
+                        clearProductTypeSpecs(inputField);
                     }
                 }
                 break;
         }
-    });
+    })    
+    ;
 }
 
 function listSuggestion(value, ul, inputField, inputType, hiddenInput) {
@@ -268,18 +270,22 @@ function listSuggestion(value, ul, inputField, inputType, hiddenInput) {
 
     // Make an AJAX request and include the query parameter
     const requestData = {query: value, type: inputType, product_type: hiddenInputsProductType};
-
-    // Make an AJAX request to fetch suggestions
+    // Make an AJAX request to fetch 
     $.post('/api/quotation', requestData, function (data) {
         ul.html('');
+        upgradeQuantityField = false;
         data.suggestions.forEach(function (suggestion) {
-            const li = $(`<li data-id="${suggestion.id}">${suggestion.name}</li>`);
+            // in case upgrade with sqm or pcs
+            li = $(`<li data-id="${suggestion.id}"${suggestion.unit ? ` data-unit="${suggestion.unit}"` : ''}>${suggestion.name}</li>`);
             li.on('click', function () {
                 if (inputField.data('type') === 'product_type') {
-                    clearOtherElements(inputField);
+                    clearProductTypeSpecs(inputField);
                 }
+                // add unit in hidden input
+                suggestion.hasOwnProperty('unit') ? hiddenInput.attr('data-unit', suggestion.unit) : null;
                 hiddenInput.val(suggestion.id);
                 inputField.val(suggestion.name);
+                inputField.trigger('input') // fvck aloyon ko ini mahanap na igwa palan sadi na lintian para matrigger sa upgradequantity a;sdlkfja;sldkfj
                 checkPriceBaseOnInputs(inputField)
                 ul.html('');
                 ul.remove()
@@ -292,8 +298,74 @@ function listSuggestion(value, ul, inputField, inputType, hiddenInput) {
             const addNewLi = $(`<li class="missing">Try again, <span class="font-weight-bolder">(${value})</span> not found.</li>`);
             ul.append(addNewLi);
         }
+
     }).fail(function (error) {
         console.error(error);
     });
 
+}
+
+let formGroupCounter = 1;
+function addUpgradeForm() {
+    function createUpgradeForm() {
+        const upgradeFormGroup = $('<div class="form-group row form-upgrade">');
+        
+        upgradeFormGroup.attr('data-upgrade-group', 'group' + formGroupCounter)
+        const label = $('<label class="col-md-3 col-form-label">Upgrade</label>');
+        const Container = $('<div class="col-md-9">');
+        const inlineContainer = $('<div class="flex space-x-4">');
+        // data-type inserted as 'upgrade' here
+        const upgradeInput = $('<input class="flex-auto w-64 form-control item-upgrade item-whq autocomplete-input" placeholder="Upgrade" data-type="upgrade" style="resize: none;">');
+        const hiddenInput = $('<input type="hidden" name="upgrade" class="hidden-input hidden-input-upgrade" data-type="upgrade">');
+        const deleteButton =  $('<button class="flex-auto w-32 btn btn-danger">Delete</button>');
+
+        inlineContainer.append(upgradeInput);
+        inlineContainer.append(hiddenInput);
+        inlineContainer.append(deleteButton);
+
+        Container.append(inlineContainer);
+
+        upgradeFormGroup.append(label);
+        upgradeFormGroup.append(Container);
+        upgradeFormGroup.insertBefore($('.product-specs').find('label:contains("Build Price")').closest('.form-group'));
+
+        // attach events on the input fields
+        initializeAutocomplete(upgradeInput)
+        initializeWHQ(upgradeInput)
+
+        let hasQuantityFields = false;
+
+        upgradeInput.on('input', function() {
+            if(hiddenInput.attr('data-unit') === 'pcs' && hasQuantityFields == false) {
+                addUpgradeQuantityFields(upgradeFormGroup)
+                hasQuantityFields = true;
+            } else if (hiddenInput.attr('data-unit') === 'sqm' && hasQuantityFields == true) {
+                removeUpgradeQuantityFields(upgradeFormGroup)
+                hasQuantityFields = false;
+            }
+        })
+
+        deleteButton.on('click', function() {
+            upgradeFormGroup.remove();
+        });
+
+        formGroupCounter ++
+    }
+
+    function addUpgradeQuantityFields(upgradeFormGroup) {
+        inputContainer = $('<div class="col-md-9 item-quantity-container mt-3">')
+        const label = $('<label class="col-md-3 col-form-label item-quantity-label mt-3">Quantity</label>');
+        const upgradeQuantity = $('<input type="number" class="form-control item-whq item-quantity" value="1" step="1" min="1">')
+
+        inputContainer.append(upgradeQuantity);
+
+        upgradeFormGroup.append(label);
+        upgradeFormGroup.append(inputContainer);
+    }
+
+    function removeUpgradeQuantityFields(upgradeFormGroup) {
+        upgradeFormGroup.find('.item-quantity-container, .item-quantity-label').remove();
+    }
+    
+    createUpgradeForm();
 }

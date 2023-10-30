@@ -46,14 +46,14 @@
             </div>
         </div>
         <div class="col-lg-8 spec-container">
-            <div class="row">
-                <div class="col-12">
+            <div class="row product-specs">
+                <div class="col-12 product-specs">
 
                     <div class="flex justify-between">
                     Specification
                         <div class="flex">
                             <a href="javascript:void(0)" class="btn btn-sm btn-success"
-                               onclick="{$(this).closest('.spec-container').find('.form-upgrade').toggle()}">
+                               onclick="addUpgradeForm()">
                                 Upgrade</a>
                             <a href="javascript:void(0)" class="btn btn-sm btn-success ml-1"
                                onclick="{$(this).closest('.spec-container').find('.form-glass-upgrade').toggle()}">Glass
@@ -81,6 +81,12 @@
                             <input type="hidden" name="frame" class="hidden-input hidden-input-upgrade"
                                    data-type="upgrade">
                         </div>
+                        <!-- <div class="col-md-9">
+                            <input class="form-control item-upgrade-quantity item-whq autocomplete-input" placeholder="Upgrade"
+                                   data-type="" style="resize: none;"/>
+                            <input type="hidden" name="frame" class="hidden-input hidden-input-upgrade"
+                                   data-type="upgrade"> 
+                        </div> -->
                     </div>
 
                     <div class="form-group row">
