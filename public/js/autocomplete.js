@@ -48,11 +48,13 @@ function initializeWHQ(inputField){
         hiddenInputs.each(function () {
             requestData[$(this).data('type')] = $(this).val();
         });
+
         requestData['upgrade'] = upgradeValue;
         requestData['height'] = itemBuildHeight;
         requestData['width'] = itemBuildWidth;
         requestData['quantity'] = itemBuildQuantity;
 
+        console.log('whq', requestData);
         if(!loadingPrices){
             loadingPrices = true
             $.post('/api/get-price', {query: JSON.stringify(requestData)}, function (data) {
@@ -90,6 +92,7 @@ function checkPriceBaseOnInputs(inputField) {
     requestData['width'] = itemBuildWidth;
     requestData['quantity'] = itemBuildQuantity;
     
+    console.log('checkPriceBaseOnInputs', checkPriceBaseOnInputs);
     let loadingPrices = false;
     if(!loadingPrices){
         loadingPrices = true;
