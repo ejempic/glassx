@@ -12,6 +12,12 @@ use App\Models\Quotation;
 use App\Models\Upgrade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
+use PhpOffice\PhpSpreadsheet\Exception;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class QuotationController extends Controller
 {
@@ -73,6 +79,32 @@ class QuotationController extends Controller
 
         return response()->json($data);
         dd($quotation->first(),$quotation->toSql(),$quotation->getBindings());
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function export()
+    {
+        $inputFileName = storage_path('app/lib/Template.xlsx'); // Replace with the path to your Excel file
+        $outputFileName = storage_path('app/lib/Output.xlsx');
+        $now = now();
+
+        try {
+            $spreadsheet = IOFactory::load($inputFileName);
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $worksheet->setCellValue('F5', $now->format('d/m/Y'));
+
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->save($outputFileName);
+            return Response::download($outputFileName, 'modified_file.xlsx', [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error loading file: ' . $e->getMessage());
+        }
     }
 
     public function getQuery(Request $request)

@@ -23,6 +23,12 @@
                         <td class="text-right">0</td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Total</th>
+                        <th class="text-right">0</th>
+                    </tr>
+                </tfoot>
             </table>
             <button class="btn btn-primary btn-block add-quotation" type="button" id="add-new-item">Add new Location</button>
         </div>

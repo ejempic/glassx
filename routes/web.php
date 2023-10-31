@@ -20,9 +20,13 @@ use App\Http\Controllers\ProductManagementController;
 Route::get('/', 'App\Http\Controllers\QuotationController@index')
     ->middleware(['auth', 'verified'])->name('quotation');
 
+
+
+Route::get('/export',  [QuotationController::class, 'export']);
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [QuotationController::class, 'index'])->name('quotation');
+    Route::post('/save', [QuotationController::class, 'save'])->name('quotation.store');
 //    Route::get('/employees', [ProfileController::class, 'index'])->name('employees');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 //    Route::get('/employees/{user}/edit', [ProfileController::class, 'edit'])->name('employees.edit');
