@@ -78,7 +78,7 @@ function computeBuildTable(requestData, inputField){
     var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
     var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
     let loadingPrices = false;
-    console.log(JSON.stringify(requestData))
+    
     if(!loadingPrices){
         loadingPrices = true;
         $.post('/api/get-price', {query: JSON.stringify(requestData)}, function (data) {
