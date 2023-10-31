@@ -78,6 +78,7 @@ function computeBuildTable(requestData, inputField){
     var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
     var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
     let loadingPrices = false;
+    console.log(JSON.stringify(requestData))
     if(!loadingPrices){
         loadingPrices = true;
         $.post('/api/get-price', {query: JSON.stringify(requestData)}, function (data) {
@@ -312,23 +313,31 @@ function addUpgradeForm() {
         const upgradeFormGroup = $('<div class="form-group row form-upgrade">');
         
         upgradeFormGroup.attr('data-upgrade-group', 'group' + formGroupCounter)
-        const label = $('<label class="col-md-3 col-form-label">Upgrade</label>');
+        const upgradeLabel = $('<label class="col-md-3 col-form-label">Upgrade</label>');
         const Container = $('<div class="col-md-9">');
-        const inlineContainer = $('<div class="flex space-x-4">');
+        const inlineContainer = $('<div class="flex flex-row gap-x-2">');
+        
+        const upgradeContainer = $('<div class="grow">')
+        const upgradeInput = $('<input class="basis-1/2 form-control item-upgrade item-whq autocomplete-input" placeholder="Upgrade" data-type="upgrade" style="resize: none; flex-basis: 60%;">');
         // data-type inserted as 'upgrade' here
-        const upgradeInput = $('<input class="flex-auto w-64 form-control item-upgrade item-whq autocomplete-input" placeholder="Upgrade" data-type="upgrade" style="resize: none;">');
-        const hiddenInput = $('<input type="hidden" name="upgrade" class="hidden-input hidden-input-upgrade" data-type="upgrade">');
-        const deleteButton =  $('<button class="flex-auto w-32 btn btn-danger">Delete</button>');
+        const hiddenInput = $('<input type="hidden" name="upgrade" class="hidden-input hidden-input-upgrade" data-type="upgrade" style="flex-basis: 20%;">');
+        upgradeContainer.append(upgradeInput, hiddenInput)
 
-        inlineContainer.append(upgradeInput);
-        inlineContainer.append(hiddenInput);
-        inlineContainer.append(deleteButton);
+        // qty
+        const qtyContainer = $('<div class="basis-1/3 grow flex flex-row gap-x-2" style="display: none;">');
+        const qtyLabel = $('<label class="col-form-label item-quantity-label">Qty</label>');
+        const upgradeQuantity = $('<input type="number" class="form-control item-whq item-quantity" value="1" step="1" min="1">')
+        qtyContainer.append(qtyLabel, upgradeQuantity);
+ 
+        const buttonContainer = $('<div class="basis-1/4 flex flex-row></div>');
+        const deleteButton =  $('<button class="btn btn-danger">Delete</button>');
+        buttonContainer.append(deleteButton);
 
+        inlineContainer.append(upgradeContainer, qtyContainer, deleteButton);
         Container.append(inlineContainer);
 
-        upgradeFormGroup.append(label);
-        upgradeFormGroup.append(Container);
-        upgradeFormGroup.insertBefore($('.product-specs').find('label:contains("Build Price")').closest('.form-group'));
+        upgradeFormGroup.append(upgradeLabel, Container);
+        upgradeFormGroup.insertBefore($('.product-specs').find('label:contains("Handle")').closest('.form-group'));
 
         // attach events on the input fields
         initializeAutocomplete(upgradeInput)
@@ -338,10 +347,10 @@ function addUpgradeForm() {
 
         upgradeInput.on('input', function() {
             if(hiddenInput.attr('data-unit') === 'pcs' && hasQuantityFields == false) {
-                addUpgradeQuantityFields(upgradeFormGroup)
+                toggleQuantityFields(qtyContainer);
                 hasQuantityFields = true;
             } else if (hiddenInput.attr('data-unit') === 'sqm' && hasQuantityFields == true) {
-                removeUpgradeQuantityFields(upgradeFormGroup)
+                toggleQuantityFields(qtyContainer);
                 hasQuantityFields = false;
             }
         })
@@ -353,19 +362,8 @@ function addUpgradeForm() {
         formGroupCounter ++
     }
 
-    function addUpgradeQuantityFields(upgradeFormGroup) {
-        inputContainer = $('<div class="col-md-9 item-quantity-container mt-3">')
-        const label = $('<label class="col-md-3 col-form-label item-quantity-label mt-3">Quantity</label>');
-        const upgradeQuantity = $('<input type="number" class="form-control item-whq item-quantity" value="1" step="1" min="1">')
-
-        inputContainer.append(upgradeQuantity);
-
-        upgradeFormGroup.append(label);
-        upgradeFormGroup.append(inputContainer);
-    }
-
-    function removeUpgradeQuantityFields(upgradeFormGroup) {
-        upgradeFormGroup.find('.item-quantity-container, .item-quantity-label').remove();
+    function toggleQuantityFields(qtyContainer) {
+        qtyContainer.toggle()
     }
     
     createUpgradeForm();
