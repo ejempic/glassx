@@ -46,14 +46,14 @@
             </div>
         </div>
         <div class="col-lg-8 spec-container">
-            <div class="row">
-                <div class="col-12">
+            <div class="row product-specs">
+                <div class="col-12 product-specs">
 
                     <div class="flex justify-between">
                     Specification
                         <div class="flex">
                             <a href="javascript:void(0)" class="btn btn-sm btn-success"
-                               onclick="{$(this).closest('.spec-container').find('.form-upgrade').toggle()}">
+                               onclick="addUpgradeForm()">
                                 Upgrade</a>
                             <a href="javascript:void(0)" class="btn btn-sm btn-success ml-1"
                                onclick="{$(this).closest('.spec-container').find('.form-glass-upgrade').toggle()}">Glass
@@ -73,15 +73,23 @@
                         </div>
                     </div>
 
-                    <div class="form-group row form-upgrade" style="display: none">
+                    <!-- <div class="form-group row form-upgrade">
                         <label class="col-md-3 col-form-label">Upgrade</label>
                         <div class="col-md-9">
-                            <input class="form-control item-upgrade item-whq autocomplete-input" placeholder="Upgrade"
-                                   data-type="{{\App\Models\Quotation::UPGRADE}}" style="resize: none;"/>
-                            <input type="hidden" name="frame" class="hidden-input hidden-input-upgrade"
-                                   data-type="upgrade">
+                            <div class="flex flex-row gap-x-2">
+                                <div class="grow"><input class="form-control item-type autocomplete-input" placeholder="Product Type"></div>
+                                <input type="hidden" name="type" class="hidden-input hidden-input-product-type"
+                                   data-type="type">
+                                <div class="basis-1/3 grow flex flex-row gap-x-2">
+                                    <label class="col-form-label">Qty</label>
+                                    <input class="form-control item-type autocomplete-input" placeholder="Qty">
+                                </div>
+                                <div class="basis-1/4 flex flex-row">
+                                    <button class="btn btn-danger">Delete</button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="form-group row">
                         <label class="col-md-3 col-form-label">Handle
