@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/quotation', 'App\Http\Controllers\QuotationController@getQuery');
+Route::post('/quotation-get-query', 'App\Http\Controllers\QuotationController@getQuery');
 Route::post('/get-price', 'App\Http\Controllers\QuotationController@getPrice');
-Route::post('/add-query', 'App\Http\Controllers\QuotationController@addQuery');
+Route::post('/add-quotation', 'App\Http\Controllers\QuotationController@addQuotation');

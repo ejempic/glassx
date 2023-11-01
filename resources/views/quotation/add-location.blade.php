@@ -1,3 +1,4 @@
+<!-- add-location.blade.php -->
 <section class="space-y-6">
     <header>
         <h2 class="text-xl font-medium text-gray-900">
@@ -10,7 +11,7 @@
     </header>
     <div class="row">
         <div class="col-lg-3 col-sm-3">
-            <table class="table table-auto">
+            <table class="table table-auto" id="quotation-table-location-summary">
                 <thead>
                 <tr>
                     <th>Locations</th>
@@ -26,14 +27,16 @@
                 <tfoot>
                     <tr>
                         <th>Total</th>
-                        <th class="text-right">0</th>
+                        <th class="text-right"><span id="location-table-body-total">0</span></th>
                     </tr>
                 </tfoot>
             </table>
             <button class="btn btn-primary btn-block add-quotation" type="button" id="add-new-item">Add new Location</button>
+            <button class="btn btn-success btn-block" type="button" id="add-quotation-to-compare">Save Quotation to Compare</button>
         </div>
         <div class="col-lg-9 col-sm-9">
             <div class="row add-item">
+                <!-- add-location.blade.php -->
                 <div id="new-item-place-holder" class="hidden">
                     @include('quotation.item')
                 </div>

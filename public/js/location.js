@@ -1,15 +1,7 @@
 $(document).on('click','#add-new-item',function(){
     unselectCurrentTab()
     addNewRow()
-    const inputFields = $('.autocomplete-input');
-    inputFields.each(function () {
-        initializeAutocomplete($(this))
-    });
-
-    const dimensionsQuantity = $('.item-whq');
-    dimensionsQuantity.each(function () {
-        initializeWHQ($(this))
-    });
+    initializeApp()
 });
 
 $(document).on('keyup','.location-name', function(){
@@ -64,7 +56,6 @@ function addNewPreviewRow(){
     var tbody = document.getElementById("location-table-body");
     var rowCount = tbody.getElementsByTagName("tr").length+1;
     const trId = $(tbody).find('tr').last().data('id');
-    console.log(trId);
     if(trId !== rowCount){
         // rowCount = trId
     }

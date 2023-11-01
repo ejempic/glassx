@@ -81,6 +81,11 @@ class QuotationController extends Controller
         dd($quotation->first(),$quotation->toSql(),$quotation->getBindings());
     }
 
+    public function addQuotation(Request $request)
+    {
+        dd($request->all());
+    }
+
     /**
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception

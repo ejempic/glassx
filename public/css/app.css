@@ -19,7 +19,7 @@ body{
     display: flex;
     justify-content: center;
     cursor: pointer;
-    margin-bottom: 1em;
+    margin-bottom: .05em;
     user-focus: none;
 }
 .quotation-table{
@@ -132,4 +132,11 @@ body{
 /* Hide the file input */
 .image-upload {
     display: none;
+}
+.total-item-table-specification{
+
+    width: 100%;
+}
+.total-item-table-specification td{
+
 }

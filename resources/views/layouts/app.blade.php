@@ -37,6 +37,7 @@
         <script src="{{asset('/js/autocomplete.js')}}"></script>
         <script src="{{asset('/js/location.js')}}"></script>
         <script src="{{asset('/js/build.js')}}"></script>
+        <script src="{{asset('/js/compare.js')}}"></script>
         <script src="{{asset('/js/app.js')}}"></script>
         <script src="{{asset('/js/tabs.js')}}"></script>
         @stack('scripts')

@@ -6,15 +6,7 @@ $(document).on('click','.add-new-build-btn',function(){
     const addBuildContainer = itemBuildContainer.find('.add-build');
     addBuildContainer.append(newBuildCopy);
 
-    const inputFields = $('.autocomplete-input');
-    inputFields.each(function () {
-        initializeAutocomplete($(this))
-    });
-
-    const dimensionsQuantity = $('.item-whq');
-    dimensionsQuantity.each(function () {
-        initializeWHQ($(this))
-    });
+    initializeApp()
 
     const locationContainer = itemBuildContainer.closest('.location-container');
     const locationDataId = locationContainer.data('id');

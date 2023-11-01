@@ -15,55 +15,109 @@ function formatMoney(number, currencySymbol = "₱", decimalPlaces = 2) {
     return currencySymbol + parts.join(".");
 }
 
-$(document).ready(function () {
-    // Get all input fields with the 'autocomplete-input' class
-    const inputFields = $('.autocomplete-input');
-    inputFields.each(function () {
-        initializeAutocomplete($(this))
-    });
-
-    const dimensionsQuantity = $('.item-whq');
-    dimensionsQuantity.each(function () {
-        initializeWHQ($(this))
-    });
-});
-
 function initializeWHQ(inputField){
 
-    let loadingPrices = false;
     inputField.on('input', function () {
-        var hiddenInputs = inputField.closest('.build-container').find('.hidden-input');
-        const itemBuildHeight = inputField.closest('.build-container').find('.item-height').val()
-        const itemBuildWidth = inputField.closest('.build-container').find('.item-width').val()
-        const itemBuildQuantity = inputField.closest('.build-container').find('.item-quantity').val()
-        const upgradeValue = inputField.closest('.build-container').find('.hidden-input-upgrade').val()
-
-        if(itemBuildHeight === undefined || itemBuildWidth === undefined || itemBuildQuantity === undefined){
-            return;
-        }
-        var requestData = {};
-        hiddenInputs.each(function () {
-            requestData[$(this).data('type')] = $(this).val();
-        });
-        requestData['upgrade'] = upgradeValue;
-        requestData['height'] = itemBuildHeight;
-        requestData['width'] = itemBuildWidth;
-        requestData['quantity'] = itemBuildQuantity;
-        computeBuildTable(requestData, inputField)
+        checkPriceBaseOnInputs(inputField)
     });
+}
+
+function generateTotalLocation(locationContainer){
+
+    const locationDataId = locationContainer.data('id')
+    const buildContainers = locationContainer.find('.build-container:visible')
+    const locationItemTableSpecification = locationContainer.find('.location-item-table-specification tbody');
+
+    let specification = {};
+    let visibleInputs;
+    locationItemTableSpecification.empty()
+
+    let specificationText = "";
+    buildContainers.each(function (locationKey, locationElement) {
+        visibleInputs = $(locationElement).find('input:visible, textarea');
+        visibleInputs.each(function (builderKey,builderElement) {
+            const type = $(builderElement).data('type')
+            if(type){
+                specification[type] = $(builderElement).val();
+            }
+        });
+        specificationText += "Qty("+specification.qty+")";
+
+        if(specification.width && specification.height){
+            specificationText += " "+ specification.width + " x " + specification.height;
+        }
+        if(specification.frame){
+            specificationText += " "+ specification.frame + " ";
+        }
+        if(specification.product_type){
+            specificationText += " "+ specification.product_type + " ";
+        }
+
+        locationItemTableSpecification.append('<tr>' +
+            '<td>'+specificationText+'</td>' +
+            '</tr>')
+        specificationText="";
+    });
+    const locationItemTableTotal = locationContainer.find('.location-item-table-total');
+
+
+    const buildTotalTable = locationContainer.find('.table-build-total:visible');
+    const specBasePrice = buildTotalTable.find('.spec-base-price');
+    const specUpgradePrice = buildTotalTable.find('.spec-upgrade-price');
+    const specGlassUpgradePrice = buildTotalTable.find('.spec-glass-upgrade-price');
+    const specTotalPrice = buildTotalTable.find('.spec-total-price');
+
+
+    let basePriceSum = 0;
+    let upgradeSum = 0;
+    let gupgradeSum = 0;
+    let totalSum = 0;
+    buildTotalTable.each(function(i,e){
+        basePriceSum += $(specBasePrice[i]).data('amount') ??0
+        upgradeSum += $(specUpgradePrice[i]).data('amount') ??0
+        gupgradeSum += $(specGlassUpgradePrice[i]).data('amount') ??0
+        totalSum += $(specTotalPrice[i]).data('amount') ??0
+    });
+
+    locationItemTableTotal.find('.litt-base-price').html(formatMoney(basePriceSum))
+    locationItemTableTotal.find('.litt-upgrade-price').html(formatMoney(upgradeSum))
+    locationItemTableTotal.find('.litt-gupgrade-price').html(formatMoney(gupgradeSum))
+    locationItemTableTotal.find('.litt-total-price').html(formatMoney(totalSum))
+
+    const currentTotalLocation = $('.table-preview-tr[data-id="'+locationDataId+'"]');
+    const currentTotalLocationTd = currentTotalLocation.find('td:nth-child(2)')
+    currentTotalLocationTd.html(formatMoney(totalSum));
+    currentTotalLocation.data('amount',totalSum);
+    computeTotalQuotation();
+}
+
+function computeTotalQuotation(){
+
+    const currentTotalLocation = $('.table-preview-tr');
+    let total= 0;
+    currentTotalLocation.each(function(i,e){
+        total+= $(e).data('amount')??0
+    });
+    $('#location-table-body-total').html(formatMoney(total));
 }
 
 function checkPriceBaseOnInputs(inputField) {
 
-    var hiddenInputs = inputField.closest('.build-container').find('.hidden-input');
-    const itemBuildHeight = inputField.closest('.build-container').find('.item-height').val()
-    const itemBuildWidth = inputField.closest('.build-container').find('.item-width').val()
-    const itemBuildQuantity = inputField.closest('.build-container').find('.item-quantity').val()
+    const buildContainer = inputField.closest('.build-container');
+    const hiddenInputs = buildContainer.find('.hidden-input');
+    const itemBuildHeight = buildContainer.find('.item-height').val()
+    const itemBuildWidth = buildContainer.find('.item-width').val()
+    const itemBuildQuantity = buildContainer.find('.item-quantity').val()
+    const upgradeValue = buildContainer.find('.hidden-input-upgrade').val()
 
-    var requestData = {};
+    if(itemBuildHeight === undefined || itemBuildWidth === undefined || itemBuildQuantity === undefined){
+        return;
+    }
+    let requestData = {};
     hiddenInputs.each(function () {
         requestData[$(this).data('type')] = $(this).val();
     });
+    requestData['upgrade'] = upgradeValue;
     requestData['height'] = itemBuildHeight;
     requestData['width'] = itemBuildWidth;
     requestData['quantity'] = itemBuildQuantity;
@@ -73,9 +127,11 @@ function checkPriceBaseOnInputs(inputField) {
 
 function computeBuildTable(requestData, inputField){
 
-    var buildBasePrice = inputField.closest('.build-container').find('.spec-base-price');
-    var buildUpgradePrice = inputField.closest('.build-container').find('.spec-upgrade-price');
-    var buildGlassUpgradePrice = inputField.closest('.build-container').find('.spec-glass-upgrade-price');
+    const locationContainer = inputField.closest('.location-container');
+    const builderContainer = inputField.closest('.build-container');
+    var buildBasePrice = builderContainer.find('.spec-base-price');
+    var buildUpgradePrice = builderContainer.find('.spec-upgrade-price');
+    var buildGlassUpgradePrice = builderContainer.find('.spec-glass-upgrade-price');
     let loadingPrices = false;
     if(!loadingPrices){
         loadingPrices = true;
@@ -90,6 +146,7 @@ function computeBuildTable(requestData, inputField){
             buildGlassUpgradePrice.html(formatMoney(data.glass_price))
 
             displayBuildTotal(inputField.closest('.build-container'))
+            generateTotalLocation(locationContainer)
             loadingPrices = false;
 
         }).fail(function (error) {
@@ -99,6 +156,7 @@ function computeBuildTable(requestData, inputField){
 }
 
 function displayBuildTotal(itemBuilds){
+
     const quantity = itemBuilds.find('input.item-whq.item-quantity').val();
     var buildBasePrice = itemBuilds.find('.spec-base-price').data('amount');
     var buildUpgradePrice = itemBuilds.find('.spec-upgrade-price').data('amount');
@@ -122,7 +180,9 @@ function displayBuildTotal(itemBuilds){
         total *= quantity;
     }
 
-    buildTotalPrice.html(formatMoney(total));
+    const totalMoney = formatMoney(total);
+    buildTotalPrice.html(totalMoney);
+    buildTotalPrice.data('amount',total)
 }
 
 function clearOtherElements(inputField) {
@@ -270,7 +330,7 @@ function listSuggestion(value, ul, inputField, inputType, hiddenInput) {
     const requestData = {query: value, type: inputType, product_type: hiddenInputsProductType};
 
     // Make an AJAX request to fetch suggestions
-    $.post('/api/quotation', requestData, function (data) {
+    $.post('/api/quotation-get-query', requestData, function (data) {
         ul.html('');
         data.suggestions.forEach(function (suggestion) {
             const li = $(`<li data-id="${suggestion.id}">${suggestion.name}</li>`);

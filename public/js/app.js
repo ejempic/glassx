@@ -12,3 +12,21 @@ toggleButton.addEventListener("click", () => {
         container.classList.remove("expanded");
     }
 });
+
+$(document).ready(function () {
+    initializeApp()
+});
+
+function initializeApp(){
+    // Get all input fields with the 'autocomplete-input' class
+    const inputFields = $('.autocomplete-input');
+    inputFields.each(function () {
+        initializeAutocomplete($(this))
+    });
+
+    const dimensionsQuantity = $('.item-whq');
+    dimensionsQuantity.each(function () {
+        initializeWHQ($(this))
+    });
+
+}

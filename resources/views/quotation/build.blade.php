@@ -1,3 +1,4 @@
+<!--- build.blade.php -->
 <div class="build-container col-12" data-id="1">
     <div class="row">
         <div class="col-lg-4">
@@ -5,7 +6,7 @@
                 <label class="col-md-12 col-form-label">Location</label>
                 <div class="col-md-12">
                     <input type="text" class="form-control location-name" value="Location 1"
-                           placeholder="Please enter location" data-id="1">
+                           placeholder="Please enter location" data-id="1" >
                 </div>
             </div>
             <div class="form-group row">
@@ -21,19 +22,19 @@
             <div class="form-group row">
                 <label class="col-md-4 col-form-label">Height</label>
                 <div class="col-md-8">
-                    <input type="number" class="form-control item-whq item-height" step="0.01" min="0.000">
+                    <input type="number" class="form-control item-whq item-height" step="0.01" min="0.000" data-type="height">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-4 col-form-label">Width</label>
                 <div class="col-md-8">
-                    <input type="number" class="form-control item-whq item-width" step="0.01" min="0.000">
+                    <input type="number" class="form-control item-whq item-width" step="0.01" min="0.000" data-type="width">
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-md-4 col-form-label">Quantity</label>
                 <div class="col-md-8">
-                    <input type="number" class="form-control item-whq item-quantity" value="1" step="1" min="1">
+                    <input type="number" class="form-control item-whq item-quantity" value="1" step="1" min="1" data-type="qty">
                 </div>
             </div>
 
@@ -41,7 +42,7 @@
                 <label class="col-md-4 col-form-label">Notes
                 </label>
                 <div class="col-md-8">
-                    <textarea class="form-control" style="resize: none;" rows="4"></textarea>
+                    <textarea class="form-control" style="resize: none;" rows="4" data-type="note"></textarea>
                 </div>
             </div>
         </div>
@@ -127,23 +128,23 @@
                         <label class="col-md-3 col-form-label">Build Price
                         </label>
                         <div class="col-md-9">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered table-build-total">
                                 <tbody>
                                 <tr>
                                     <td width="50%">Base Price</td>
-                                    <td><span class="spec-base-price"></span></td>
+                                    <td><span class="spec-base-price build-total-prices"></span></td>
                                 </tr>
                                 <tr>
                                     <td>Upgrades</td>
-                                    <td><span class="spec-upgrade-price"></span></td>
+                                    <td><span class="spec-upgrade-price build-total-prices"></span></td>
                                 </tr>
                                 <tr>
                                     <td>Glass Upgrade</td>
-                                    <td><span class="spec-glass-upgrade-price"></span></td>
+                                    <td><span class="spec-glass-upgrade-price build-total-prices"></span></td>
                                 </tr>
                                 <tr>
                                     <td>Total</td>
-                                    <td><span class="spec-total-price"></span></td>
+                                    <td><span class="spec-total-price build-total-prices"></span></td>
                                 </tr>
                                 </tbody>
                             </table>
